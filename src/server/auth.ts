@@ -6,8 +6,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
-
+import EmailProvider from "next-auth/providers/email";
 import { env } from "~/env";
 import { db } from "~/server/db";
 
@@ -49,9 +48,35 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    EmailProvider({
+      normalizeIdentifier(identifier: string): string {
+        const allowedDomains = ["computer-extra.de", "aem-gruppe.de"];
+        // Get the first two elements only,
+        // separated by `@` from user input.
+        let [local, domain] = identifier.toLowerCase().trim().split("@");
+        // The part before "@" can contain a ","
+        // but we remove it on the domain part
+        if (identifier.split("@").length > 2) {
+          throw new Error("Only one email allowed");
+        }
+        if (domain == null) {
+          throw new Error("no domain");
+        }
+        if (!allowedDomains.includes(domain.toLowerCase())) {
+          throw new Error("domain not allowed");
+        }
+        domain = domain.split(",")[0];
+        return `${local}@${domain}`;
+      },
+      server: {
+        host: env.EMAIL_SERVER_HOST,
+        port: env.EMAIL_SERVER_PORT,
+        auth: {
+          user: env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: env.EMAIL_FROM,
     }),
     /**
      * ...add more providers here.
