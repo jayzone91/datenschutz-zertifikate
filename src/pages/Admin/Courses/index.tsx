@@ -7,12 +7,12 @@ import LoadingScreen from "~/Components/LoadingScreen";
 import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
 
-export default function AdminUserOverview() {
-  const user = api.user.adminGetAll.useQuery();
+export default function CoursesOverview() {
   const { data: sessionData } = useSession();
+  const courses = api.course.getAll.useQuery();
 
-  if (user.isLoading) return <LoadingScreen title="Admin - User" />;
-  if (user.error) return <ErrorScreen error={user.error.message} />;
+  if (courses.isLoading) return <LoadingScreen title="Admin - User" />;
+  if (courses.error) return <ErrorScreen error={courses.error.message} />;
 
   if (!sessionData || !sessionData.user || !sessionData.user.is_admin) {
     return (
@@ -28,38 +28,37 @@ export default function AdminUserOverview() {
     );
   }
 
-  const userData = user.data;
+  const KursData = courses.data;
 
   return (
     <>
       <Head>
-        <title>Admin - User | {MAIN_TITLE}</title>
+        <title>Admin - Courses | {MAIN_TITLE}</title>
       </Head>
       <Container>
-        <h1>Admin - User</h1>
+        <h1 className="text-center mt-5">Kurs Übersicht</h1>
+        <Link href="/Admin/Courses/new" className="btn btn-primary mb-3">
+          Neuer Kurs
+        </Link>
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Admin</th>
-              <th>Email</th>
-              <th>Mail Verified</th>
-              <th>Actions</th>
+              <th>Modul</th>
+              <th>Aktionen</th>
             </tr>
           </thead>
           <tbody>
-            {userData?.map((user, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{user.name}</td>
-                <td>{user.is_admin ? "Ja" : "Nein"}</td>
-                <td>{user.email}</td>
-                <td>{user.emailVerified ? "Ja" : "Nein"}</td>
+            {KursData?.map((Kurs) => (
+              <tr key={Kurs.id}>
+                <td>{Kurs.id}</td>
+                <td>{Kurs.name}</td>
+                <td>{Kurs.modules.length}</td>
                 <td>
                   <Link
-                    href={`/Admin/User/edit/${user.id}`}
                     className="btn btn-outline-primary"
+                    href={`/Admin/Courses/edit/${Kurs.id}`}
                   >
                     Bearbeiten
                   </Link>

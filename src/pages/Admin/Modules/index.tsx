@@ -1,3 +1,4 @@
+import "@mdxeditor/editor/style.css";
 import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -7,12 +8,12 @@ import LoadingScreen from "~/Components/LoadingScreen";
 import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
 
-export default function AdminUserOverview() {
-  const user = api.user.adminGetAll.useQuery();
+export default function ModuleOverview() {
   const { data: sessionData } = useSession();
+  const modules = api.module.getAll.useQuery();
 
-  if (user.isLoading) return <LoadingScreen title="Admin - User" />;
-  if (user.error) return <ErrorScreen error={user.error.message} />;
+  if (modules.isLoading) return <LoadingScreen title="Admin - User" />;
+  if (modules.error) return <ErrorScreen error={modules.error.message} />;
 
   if (!sessionData || !sessionData.user || !sessionData.user.is_admin) {
     return (
@@ -28,38 +29,43 @@ export default function AdminUserOverview() {
     );
   }
 
-  const userData = user.data;
+  const ModuleData = modules.data;
 
   return (
     <>
       <Head>
-        <title>Admin - User | {MAIN_TITLE}</title>
+        <title>Admin - Modules | {MAIN_TITLE}</title>
       </Head>
       <Container>
-        <h1>Admin - User</h1>
+        <h1>Module Übersicht</h1>
+        <Link href="/Admin/Modules/new" className="btn btn-primary mb-3">
+          Neues Module
+        </Link>
         <Table striped bordered hover>
           <thead>
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Admin</th>
-              <th>Email</th>
-              <th>Mail Verified</th>
-              <th>Actions</th>
+              <th>Modul Typ</th>
+              <th>Kurs</th>
+              <th>Aktionen</th>
             </tr>
           </thead>
           <tbody>
-            {userData?.map((user, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{user.name}</td>
-                <td>{user.is_admin ? "Ja" : "Nein"}</td>
-                <td>{user.email}</td>
-                <td>{user.emailVerified ? "Ja" : "Nein"}</td>
+            {ModuleData?.map((modul) => (
+              <tr key={modul.id}>
+                <td>{modul.id}</td>
+                <td>{modul.name}</td>
+                <td>{modul.type}</td>
+                <td>
+                  <Link href={`/Admin/Courses/edit/${modul.Course?.id}`}>
+                    {modul.Course?.name}
+                  </Link>
+                </td>
                 <td>
                   <Link
-                    href={`/Admin/User/edit/${user.id}`}
                     className="btn btn-outline-primary"
+                    href={`/Admin/Modules/edit/${modul.id}`}
                   >
                     Bearbeiten
                   </Link>

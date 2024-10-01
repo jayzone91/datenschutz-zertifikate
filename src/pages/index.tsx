@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import Link from "next/link";
 import { useState } from "react";
 import {
   Button,
@@ -8,7 +9,10 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  Table,
 } from "react-bootstrap";
+import ErrorScreen from "~/Components/ErrorScreen";
+import LoadingScreen from "~/Components/LoadingScreen";
 import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
 
@@ -67,30 +71,61 @@ function UsernameForm() {
       ) : (
         <Container>
           <h1>{sessionData && <span>Hallo {sessionData.user.name}</span>}</h1>
-          <LatestWritings />
-          <LatestTests />
+          <p>
+            Beim bearbeiten der Kurse bitte beachten: Die Kurse werden nicht
+            zwischengespeichert. Wenn du die Seite verlässt, wird dein
+            Fortschritt nicht gespeichert.
+          </p>
+          <p>
+            Die Kurse sind kurz gehalten. Bitte bearbeite diese am Stück um
+            Datenverlust zu vermeiden.
+          </p>
+          <p>
+            Beim bestehen eines Kurses wird ein Zertifikat erstellt. Dieses
+            kannst du dir als PDF runterladen.
+          </p>
+          <LatestModules />
         </Container>
       )}
     </div>
   );
 }
 
-function LatestWritings() {
+function LatestModules() {
   const { data: sessionData } = useSession();
-  if (sessionData)
-    return (
-      <Container className="mt-2">
-        <h2>Aktuelle Texte</h2>
-      </Container>
-    );
-}
+  const courses = api.course.getUncompleted.useQuery();
 
-function LatestTests() {
-  const { data: sessionData } = useSession();
+  if (courses.isLoading) return <LoadingScreen title="" />;
+  if (courses.error) return <ErrorScreen error={courses.error.message} />;
+
   if (sessionData)
     return (
-      <Container className="mt-2">
-        <h2>Aktuelle Tests</h2>
-      </Container>
+      <div className="mt-2">
+        <h2 className="mt-2 mb-3">Aktuelle Kurse</h2>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Anzahl der Module</th>
+              <th>Anzahl der Fragen</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.data?.map((kurs) => (
+              <tr key={kurs.id}>
+                <td>
+                  <Link href={`/Courses/${kurs.id}`}>{kurs.name}</Link>
+                </td>
+                <td>{kurs.modules.length}</td>
+                <td>
+                  {kurs.modules
+                    .map((x) => x.questions.length)
+                    .reduce((a, b) => a + b)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     );
 }

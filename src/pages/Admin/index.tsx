@@ -47,7 +47,7 @@ export default function AdminOverview() {
             </Row>
           </Col>
         </Row>
-        <Row className="g-5">
+        <Row className="g-5 mb-5">
           <Col>
             <Row>
               <Link href="/Admin/Courses" className="btn btn-outline-secondary">
@@ -59,6 +59,22 @@ export default function AdminOverview() {
             <Row>
               <Link href="/Admin/Modules" className="btn btn-outline-warning">
                 Module
+              </Link>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="g-5 mb-5">
+          <Col>
+            <Row>
+              <Link href="/Admin/Textx" className="btn btn-outline-info">
+                Texte
+              </Link>
+            </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Link href="/Admin/Questions" className="btn btn-outline-success">
+                Aufgaben
               </Link>
             </Row>
           </Col>

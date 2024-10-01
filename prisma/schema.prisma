@@ -43,14 +43,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  is_admin      Boolean   @default(false)
-  email         String    @unique
+  is_admin      Boolean       @default(false)
+  email         String        @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Certificate   Certificate[]
 }
 
 model VerificationToken {
@@ -59,4 +60,49 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Certificate {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  done_date DateTime
+  userId    String
+  courseId  String
+}
+
+model Course {
+  id          String        @id @default(cuid())
+  name        String
+  description String?       @db.LongText
+  modules     Module[]
+  Certificate Certificate[]
+}
+
+model Module {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  type        String
+  text        String?    @db.LongText
+  questions   Question[]
+  Course      Course?    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId    String?
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  answers     Answer[]
+  Module      Module?  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    String?
+}
+
+model Answer {
+  id         String    @id @default(cuid())
+  text       String
+  correct    Boolean
+  Question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String?
 }

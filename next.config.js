@@ -17,7 +17,7 @@ const config = {
     locales: ["de"],
     defaultLocale: "de",
   },
-  transpilePackages: ["geist"],
+  transpilePackages: ["geist", "@mdxeditor/editor"],
 };
 
 export default config;

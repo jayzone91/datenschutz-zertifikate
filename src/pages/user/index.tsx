@@ -31,7 +31,7 @@ export default function UserPage() {
       <div>{sessionData?.user.name}</div>
       <Link
         className="btn btn-primary"
-        href={`/user/${sessionData.user.id}/edit`}
+        href={`/user/edit/${sessionData.user.id}`}
       >
         Bearbeiten
       </Link>
