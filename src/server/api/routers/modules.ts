@@ -80,4 +80,24 @@ export const moduleRouter = createTRPCRouter({
         },
       });
     }),
+  getQuestions: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.module.findMany({
+      where: {
+        type: "question",
+      },
+      include: {
+        Course: true,
+      },
+    });
+  }),
+  getTexts: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.module.findMany({
+      where: {
+        type: "text",
+      },
+      include: {
+        Course: true,
+      },
+    });
+  }),
 });

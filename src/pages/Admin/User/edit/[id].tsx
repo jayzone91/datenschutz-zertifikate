@@ -1,12 +1,12 @@
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useParams } from "next/navigation";
-import { Button, Container } from "react-bootstrap";
 import ErrorScreen from "~/Components/ErrorScreen";
 import { UserEditForm } from "~/Components/Forms";
 import LoadingScreen from "~/Components/LoadingScreen";
 import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
+import CheckAdmin from "../../_components/CheckAdmin";
 
 export default function AdminUserEdit() {
   const { data: sessionData } = useSession();
@@ -21,17 +21,7 @@ export default function AdminUserEdit() {
   if (userData == null) return <ErrorScreen error="User not found" />;
 
   if (!sessionData || !sessionData.user || !sessionData.user.is_admin) {
-    return (
-      <>
-        <Head>
-          <title>Admin - User - Edit | {MAIN_TITLE}</title>
-        </Head>
-        <Container>
-          <h1 className="test-center">Bitte erst anmelden!</h1>
-          <Button onClick={() => void signIn()}>Anmelden</Button>
-        </Container>
-      </>
-    );
+    return <CheckAdmin />;
   }
 
   return (
@@ -39,10 +29,9 @@ export default function AdminUserEdit() {
       <Head>
         <title>Admin - User - Edit | {MAIN_TITLE}</title>
       </Head>
-      <Container>
-        <h1>Benutzer bearbeiten</h1>
-        <UserEditForm user={userData} is_admin={sessionData.user.is_admin} />
-      </Container>
+
+      <h1>Benutzer bearbeiten</h1>
+      <UserEditForm user={userData} is_admin={sessionData.user.is_admin} />
     </>
   );
 }

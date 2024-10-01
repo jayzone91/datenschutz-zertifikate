@@ -1,6 +1,6 @@
 import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
-import { Button, Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import ErrorScreen from "~/Components/ErrorScreen";
 import { UserEditForm } from "~/Components/Forms";
 import LoadingScreen from "~/Components/LoadingScreen";
@@ -22,10 +22,10 @@ export default function EditUserPage() {
         <Head>
           <title>User bearbeiten | {MAIN_TITLE}</title>
         </Head>
-        <Container>
+        <>
           <h1 className="test-center">Bitte erst anmelden!</h1>
           <Button onClick={() => void signIn()}>Anmelden</Button>
-        </Container>
+        </>
       </>
     );
   }
@@ -40,9 +40,7 @@ export default function EditUserPage() {
         </title>
       </Head>
 
-      <Container>
-        <UserEditForm user={userData} is_admin={sessionData.user.is_admin} />
-      </Container>
+      <UserEditForm user={userData} is_admin={sessionData.user.is_admin} />
     </>
   );
 }

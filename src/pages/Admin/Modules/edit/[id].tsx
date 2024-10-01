@@ -14,7 +14,7 @@ import {
   thematicBreakPlugin,
   toolbarPlugin,
 } from "@mdxeditor/editor";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -22,7 +22,6 @@ import router from "next/router";
 import { useEffect, useRef, useState } from "react";
 import {
   Button,
-  Container,
   Form,
   FormControl,
   FormGroup,
@@ -34,6 +33,7 @@ import ErrorScreen from "~/Components/ErrorScreen";
 import LoadingScreen from "~/Components/LoadingScreen";
 import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
+import CheckAdmin from "../../_components/CheckAdmin";
 
 export default function EditModule() {
   const { id } = useParams();
@@ -59,17 +59,7 @@ export default function EditModule() {
   }, [modules.data]);
 
   if (!sessionData || !sessionData.user || !sessionData.user.is_admin) {
-    return (
-      <>
-        <Head>
-          <title>Admin - Modules | {MAIN_TITLE}</title>
-        </Head>
-        <Container>
-          <h1 className="test-center">Bitte erst anmelden!</h1>
-          <Button onClick={() => void signIn()}>Anmelden</Button>
-        </Container>
-      </>
-    );
+    return <CheckAdmin />;
   }
 
   if (modules.isLoading) return <LoadingScreen title="Admin - User" />;
@@ -113,134 +103,127 @@ export default function EditModule() {
       <Head>
         <title>Admin - Module | {MAIN_TITLE}</title>
       </Head>
-      <Container>
-        <Link
-          href="/Admin/Modules"
-          className="btn btn-outline-primary mt-2 mb-3"
-        >
-          Zurück
-        </Link>
-        <h1 className="text-center mt-5">Module bearbeiten</h1>
-        <Form>
-          <FormGroup className="mb-3">
-            <FormLabel>Name*</FormLabel>
-            <FormControl
-              type="text"
-              placeholder="Name"
-              onChange={(e) => setName(e.target.value)}
-              required
-              value={modules.data?.name}
-              disabled={loading}
-              maxLength={100}
-              minLength={1}
-            />
-          </FormGroup>
-          <FormGroup className="mb-3">
-            <FormLabel>Typ*</FormLabel>
-            <FormSelect onChange={(e) => setType(e.target.value)} required>
-              <option selected={modules.data?.type == "text"} value="text">
-                Text
-              </option>
-              <option
-                selected={modules.data?.type == "question"}
-                value="question"
-              >
-                Frage
-              </option>
-            </FormSelect>
-          </FormGroup>
-          <FormGroup className="mb-3">
-            <FormLabel>Kurs*</FormLabel>
-            <FormSelect onChange={(e) => setCourseId(e.target.value)} required>
-              <option selected disabled>
-                Auswählen
-              </option>
-              {courses.data?.map((kurs) => (
-                <option
-                  key={kurs.id}
-                  value={kurs.id}
-                  selected={kurs.id === courseId}
-                >
-                  {kurs.name}
-                </option>
-              ))}
-            </FormSelect>
-          </FormGroup>
-          <FormGroup className="mb-3">
-            <FormLabel>Beschreibung</FormLabel>
-            <MDXEditor
-              ref={ref}
-              markdown={modules.data?.description ?? ""}
-              onChange={(value) => setDescription(value)}
-              plugins={[
-                toolbarPlugin({
-                  toolbarContents: () => <KitchenSinkToolbar />,
-                }),
-                listsPlugin(),
-                quotePlugin(),
-                headingsPlugin(),
-                linkPlugin(),
-                linkDialogPlugin(),
-                imagePlugin(),
-                tablePlugin(),
-                thematicBreakPlugin(),
-                frontmatterPlugin(),
-                markdownShortcutPlugin(),
-              ]}
-              className="border rounded mb-3"
-            />
-          </FormGroup>
 
-          <Button onClick={handleSubmit} disabled={loading}>
-            Speichern
-          </Button>
-        </Form>
-        <hr />
-        <h2>{type == "text" ? "Texte" : "Fragen"}</h2>
-        <Link
-          className="btn btn-primary mb-5"
-          href={type == "text" ? "/Admin/Texts/new" : "/Admin/Questions/new"}
-        >
-          {type == "text" ? "Neuen Text erstellen" : "Neue Frage erstellen"}
-        </Link>
-        {type == "text" && modules.data?.text ? (
-          <p>{modules.data?.text}</p>
-        ) : (
-          <p>Noch kein Text vorhanden</p>
-        )}
-        {type == "question" && (
-          <Table>
-            <thead>
-              <tr>
-                <th>Frage</th>
-                <th>Bearbeiten</th>
-              </tr>
-            </thead>
-            <tbody>
-              {modules.data?.questions &&
-                modules.data?.questions.length > 0 &&
-                modules.data.questions.map((question) => (
-                  <tr key={question.id}>
-                    <td>{question.title}</td>
-                    <td>
-                      <Link
-                        className="btn btn-outline-primary"
-                        href={`/Admin/Qestions/edit/${question.id}`}
-                      >
-                        Bearbeiten
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
-        )}
-        <hr />
-        <h2>Danger Zone</h2>
-        <Button variant="danger" onClick={handleDelete}>
-          Löschen
+      <h1 className="text-center mt-5">Module bearbeiten</h1>
+      <Form>
+        <FormGroup className="mb-3">
+          <FormLabel>Name*</FormLabel>
+          <FormControl
+            type="text"
+            placeholder="Name"
+            onChange={(e) => setName(e.target.value)}
+            required
+            value={modules.data?.name}
+            disabled={loading}
+            maxLength={100}
+            minLength={1}
+          />
+        </FormGroup>
+        <FormGroup className="mb-3">
+          <FormLabel>Typ*</FormLabel>
+          <FormSelect onChange={(e) => setType(e.target.value)} required>
+            <option selected={modules.data?.type == "text"} value="text">
+              Text
+            </option>
+            <option
+              selected={modules.data?.type == "question"}
+              value="question"
+            >
+              Frage
+            </option>
+          </FormSelect>
+        </FormGroup>
+        <FormGroup className="mb-3">
+          <FormLabel>Kurs*</FormLabel>
+          <FormSelect onChange={(e) => setCourseId(e.target.value)} required>
+            <option selected disabled>
+              Auswählen
+            </option>
+            {courses.data?.map((kurs) => (
+              <option
+                key={kurs.id}
+                value={kurs.id}
+                selected={kurs.id === courseId}
+              >
+                {kurs.name}
+              </option>
+            ))}
+          </FormSelect>
+        </FormGroup>
+        <FormGroup className="mb-3">
+          <FormLabel>Beschreibung</FormLabel>
+          <MDXEditor
+            ref={ref}
+            markdown={modules.data?.description ?? ""}
+            onChange={(value) => setDescription(value)}
+            plugins={[
+              toolbarPlugin({
+                toolbarContents: () => <KitchenSinkToolbar />,
+              }),
+              listsPlugin(),
+              quotePlugin(),
+              headingsPlugin(),
+              linkPlugin(),
+              linkDialogPlugin(),
+              imagePlugin(),
+              tablePlugin(),
+              thematicBreakPlugin(),
+              frontmatterPlugin(),
+              markdownShortcutPlugin(),
+            ]}
+            className="border rounded mb-3"
+          />
+        </FormGroup>
+
+        <Button onClick={handleSubmit} disabled={loading}>
+          Speichern
         </Button>
-      </Container>
+      </Form>
+      <hr />
+      <h2>{type == "text" ? "Texte" : "Fragen"}</h2>
+      <Link
+        className="btn btn-primary mb-5"
+        href={type == "text" ? "/Admin/Texts/new" : "/Admin/Questions/new"}
+      >
+        {type == "text" ? "Neuen Text erstellen" : "Neue Frage erstellen"}
+      </Link>
+      {type == "text" && modules.data?.text ? (
+        <p>{modules.data?.text}</p>
+      ) : (
+        <p>Noch kein Text vorhanden</p>
+      )}
+      {type == "question" && (
+        <Table>
+          <thead>
+            <tr>
+              <th>Frage</th>
+              <th>Bearbeiten</th>
+            </tr>
+          </thead>
+          <tbody>
+            {modules.data?.questions &&
+              modules.data?.questions.length > 0 &&
+              modules.data.questions.map((question) => (
+                <tr key={question.id}>
+                  <td>{question.title}</td>
+                  <td>
+                    <Link
+                      className="btn btn-outline-primary"
+                      href={`/Admin/Qestions/edit/${question.id}`}
+                    >
+                      Bearbeiten
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      )}
+      <hr />
+      <h2>Danger Zone</h2>
+      <Button variant="danger" onClick={handleDelete}>
+        Löschen
+      </Button>
     </>
   );
 }

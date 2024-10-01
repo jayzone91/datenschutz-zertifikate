@@ -15,14 +15,13 @@ import {
   toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
 import {
   Button,
-  Container,
   Form,
   FormControl,
   FormGroup,
@@ -30,6 +29,7 @@ import {
 } from "react-bootstrap";
 import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
+import CheckAdmin from "../_components/CheckAdmin";
 
 export default function CoursesNew() {
   const { data: sessionData } = useSession();
@@ -42,17 +42,7 @@ export default function CoursesNew() {
   const [loading, setLoading] = useState<boolean>(false);
 
   if (!sessionData || !sessionData.user || !sessionData.user.is_admin) {
-    return (
-      <>
-        <Head>
-          <title>Admin - User | {MAIN_TITLE}</title>
-        </Head>
-        <Container>
-          <h1 className="test-center">Bitte erst anmelden!</h1>
-          <Button onClick={() => void signIn()}>Anmelden</Button>
-        </Container>
-      </>
-    );
+    return <CheckAdmin />;
   }
 
   const handleSubmit = async () => {
@@ -72,52 +62,51 @@ export default function CoursesNew() {
       <Head>
         <title>Admin - Courses | {MAIN_TITLE}</title>
       </Head>
-      <Container>
-        <h1 className="text-center mt-5">Neuen Kurs erstellen</h1>
-        <Form>
-          <FormGroup className="mb-3">
-            <FormLabel>Name*</FormLabel>
-            <FormControl
-              type="text"
-              placeholder="Name"
-              onChange={(e) => setName(e.target.value)}
-              required
-              value={name}
-              disabled={loading}
-              maxLength={100}
-              minLength={1}
-            />
-          </FormGroup>
-          <FormGroup className="mb-3">
-            <FormLabel>Beschreibung</FormLabel>
-            <MDXEditor
-              ref={ref}
-              markdown={description ?? ""}
-              onChange={(value) => setDescription(value)}
-              plugins={[
-                toolbarPlugin({
-                  toolbarContents: () => <KitchenSinkToolbar />,
-                }),
-                listsPlugin(),
-                quotePlugin(),
-                headingsPlugin(),
-                linkPlugin(),
-                linkDialogPlugin(),
-                imagePlugin(),
-                tablePlugin(),
-                thematicBreakPlugin(),
-                frontmatterPlugin(),
-                markdownShortcutPlugin(),
-              ]}
-              className="border rounded mb-3"
-            />
-          </FormGroup>
 
-          <Button onClick={handleSubmit} disabled={loading}>
-            Speichern
-          </Button>
-        </Form>
-      </Container>
+      <h1 className="text-center mt-5">Neuen Kurs erstellen</h1>
+      <Form>
+        <FormGroup className="mb-3">
+          <FormLabel>Name*</FormLabel>
+          <FormControl
+            type="text"
+            placeholder="Name"
+            onChange={(e) => setName(e.target.value)}
+            required
+            value={name}
+            disabled={loading}
+            maxLength={100}
+            minLength={1}
+          />
+        </FormGroup>
+        <FormGroup className="mb-3">
+          <FormLabel>Beschreibung</FormLabel>
+          <MDXEditor
+            ref={ref}
+            markdown={description ?? ""}
+            onChange={(value) => setDescription(value)}
+            plugins={[
+              toolbarPlugin({
+                toolbarContents: () => <KitchenSinkToolbar />,
+              }),
+              listsPlugin(),
+              quotePlugin(),
+              headingsPlugin(),
+              linkPlugin(),
+              linkDialogPlugin(),
+              imagePlugin(),
+              tablePlugin(),
+              thematicBreakPlugin(),
+              frontmatterPlugin(),
+              markdownShortcutPlugin(),
+            ]}
+            className="border rounded mb-3"
+          />
+        </FormGroup>
+
+        <Button onClick={handleSubmit} disabled={loading}>
+          Speichern
+        </Button>
+      </Form>
     </>
   );
 }

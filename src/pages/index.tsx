@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   Button,
-  Container,
   Form,
   FormControl,
   FormGroup,
@@ -27,11 +26,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Container>
-          <div className="mt-5">
-            <UsernameForm />
-          </div>
-        </Container>
+        <div className="mt-5">
+          <UsernameForm />
+        </div>
       </main>
     </>
   );
@@ -69,7 +66,7 @@ function UsernameForm() {
           </Form>
         </>
       ) : (
-        <Container>
+        <>
           <h1>{sessionData && <span>Hallo {sessionData.user.name}</span>}</h1>
           <p>
             Beim bearbeiten der Kurse bitte beachten: Die Kurse werden nicht
@@ -85,7 +82,7 @@ function UsernameForm() {
             kannst du dir als PDF runterladen.
           </p>
           <LatestModules />
-        </Container>
+        </>
       )}
     </div>
   );

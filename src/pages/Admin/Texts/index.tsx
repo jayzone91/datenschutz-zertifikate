@@ -8,49 +8,52 @@ import { MAIN_TITLE } from "~/Config";
 import { api } from "~/utils/api";
 import CheckAdmin from "../_components/CheckAdmin";
 
-export default function AdminUserOverview() {
-  const user = api.user.adminGetAll.useQuery();
+export default function TextOverview() {
   const { data: sessionData } = useSession();
+  const texts = api.module.getTexts.useQuery();
 
-  if (user.isLoading) return <LoadingScreen title="Admin - User" />;
-  if (user.error) return <ErrorScreen error={user.error.message} />;
+  if (texts.isLoading) return <LoadingScreen title="Admin - Texts" />;
+  if (texts.error) return <ErrorScreen error={texts.error.message} />;
 
   if (!sessionData || !sessionData.user || !sessionData.user.is_admin) {
     return <CheckAdmin />;
   }
 
-  const userData = user.data;
-
   return (
     <>
       <Head>
-        <title>Admin - User | {MAIN_TITLE}</title>
+        <title>Admin - Texts | {MAIN_TITLE}</title>
       </Head>
 
-      <h1>Admin - User</h1>
+      <h1 className="mt-3 mb-3">Text Übersicht</h1>
+      <Link href="/Admin/Texts/new" className="btn btn-primary mb-3">
+        Neuen Text
+      </Link>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Admin</th>
-            <th>Email</th>
-            <th>Mail Verified</th>
-            <th>Actions</th>
+            <th>Modul Typ</th>
+            <th>Kurs</th>
+            <th>Aktionen</th>
           </tr>
         </thead>
         <tbody>
-          {userData?.map((user, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{user.name}</td>
-              <td>{user.is_admin ? "Ja" : "Nein"}</td>
-              <td>{user.email}</td>
-              <td>{user.emailVerified ? "Ja" : "Nein"}</td>
+          {texts.data?.map((text) => (
+            <tr key={text.id}>
+              <td>{text.id}</td>
+              <td>{text.name}</td>
+              <td>{text.type}</td>
+              <td>
+                <Link href={`/Admin/Courses/edit/${text.Course?.id}`}>
+                  {text.Course?.name}
+                </Link>
+              </td>
               <td>
                 <Link
-                  href={`/Admin/User/edit/${user.id}`}
                   className="btn btn-outline-primary"
+                  href={`/Admin/Texts/edit/${text.id}`}
                 >
                   Bearbeiten
                 </Link>
