@@ -2,7 +2,6 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { Col, Row } from "react-bootstrap";
-import Breadcrumb from "~/Components/Breadcrumb";
 import { MAIN_TITLE } from "~/Config";
 import CheckAdmin from "./_components/CheckAdmin";
 
@@ -18,9 +17,6 @@ export default function AdminOverview() {
       <Head>
         <title>Admin | {MAIN_TITLE}</title>
       </Head>
-
-      <Breadcrumb />
-
       <h1>Admin</h1>
       <Row className="mt-5 mb-5 g-5">
         <Col>

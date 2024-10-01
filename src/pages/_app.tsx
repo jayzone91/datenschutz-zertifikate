@@ -1,3 +1,4 @@
+import "@mdxeditor/editor/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { GeistSans } from "geist/font/sans";
 import { type Session } from "next-auth";
