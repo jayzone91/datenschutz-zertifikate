@@ -22,6 +22,9 @@ export default function Menubar() {
                 <Nav.Link as={Link} href="/courses">
                   Kurse
                 </Nav.Link>
+                <Nav.Link as={Link} href="/certificates">
+                  Zertifikate
+                </Nav.Link>
               </>
             )}
           </Nav>
@@ -37,22 +40,13 @@ export default function Menubar() {
                     Admin
                   </NavDropdown.Item>
                 )}
-                <NavDropdown.Item
-                  as={Link}
-                  href={`/user/${sessionData.user.id}/`}
-                >
+                <NavDropdown.Item as={Link} href={`/user/`}>
                   Konto
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  as={Link}
-                  href={`/user/${sessionData.user.id}/courses/`}
-                >
+                <NavDropdown.Item as={Link} href={`/courses/`}>
                   Meine Kurse
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  as={Link}
-                  href={`/user/${sessionData.user.id}/certificates/`}
-                >
+                <NavDropdown.Item as={Link} href={`/certificates/`}>
                   Meine Zertifikate
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
