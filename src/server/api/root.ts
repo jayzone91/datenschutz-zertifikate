@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { answerRouter } from "./routers/answers";
+import { certificateRouter } from "./routers/certificates";
 import { courseRouter } from "./routers/courses";
 import { moduleRouter } from "./routers/modules";
 import { questionRouter } from "./routers/qestions";
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   module: moduleRouter,
   question: questionRouter,
   answer: answerRouter,
+  certificate: certificateRouter,
 });
 
 // export type definition of API
