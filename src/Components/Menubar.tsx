@@ -17,12 +17,13 @@ export default function Menubar() {
             <Nav.Link as={Link} href="/">
               Dashboard
             </Nav.Link>
-            <Nav.Link as={Link} href="/readings">
-              Lese Stoff
-            </Nav.Link>
-            <Nav.Link as={Link} href="/tests">
-              Aufgaben
-            </Nav.Link>
+            {sessionData && (
+              <>
+                <Nav.Link as={Link} href="/courses">
+                  Kurse
+                </Nav.Link>
+              </>
+            )}
           </Nav>
           <Nav>
             {sessionData ? (
@@ -31,17 +32,28 @@ export default function Menubar() {
                 title={sessionData.user.name ?? ""}
                 menuVariant="dark"
               >
+                {sessionData.user.is_admin && (
+                  <NavDropdown.Item as={Link} href={`/Admin/`}>
+                    Admin
+                  </NavDropdown.Item>
+                )}
                 <NavDropdown.Item
                   as={Link}
                   href={`/user/${sessionData.user.id}/`}
                 >
                   Konto
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Andere Dinge
+                <NavDropdown.Item
+                  as={Link}
+                  href={`/user/${sessionData.user.id}/courses/`}
+                >
+                  Meine Kurse
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
+                <NavDropdown.Item
+                  as={Link}
+                  href={`/user/${sessionData.user.id}/certificates/`}
+                >
+                  Meine Zertifikate
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={() => void signOut()}>

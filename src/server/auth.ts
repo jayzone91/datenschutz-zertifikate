@@ -20,15 +20,17 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      is_admin: boolean;
       // ...other properties
       // role: UserRole;
     };
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    is_admin: boolean;
+    // ...other properties
+    // role: UserRole;
+  }
 }
 
 /**
@@ -43,6 +45,7 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: user.id,
+        is_admin: user.is_admin,
       },
     }),
   },
@@ -53,6 +56,7 @@ export const authOptions: NextAuthOptions = {
         const allowedDomains = ["computer-extra.de", "aem-gruppe.de"];
         // Get the first two elements only,
         // separated by `@` from user input.
+        // eslint-disable-next-line prefer-const
         let [local, domain] = identifier.toLowerCase().trim().split("@");
         // The part before "@" can contain a ","
         // but we remove it on the domain part

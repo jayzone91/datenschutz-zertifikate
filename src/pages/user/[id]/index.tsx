@@ -9,10 +9,15 @@ export default function UserPage() {
 
   if (!sessionData || !sessionData.user) {
     return (
-      <Container>
-        <h1 className="test-center">Bitte erst anmelden!</h1>
-        <Button onClick={() => void signIn()}>Anmelden</Button>
-      </Container>
+      <>
+        <Head>
+          <title>User bearbeiten | {MAIN_TITLE}</title>
+        </Head>
+        <Container>
+          <h1 className="test-center">Bitte erst anmelden!</h1>
+          <Button onClick={() => void signIn()}>Anmelden</Button>
+        </Container>
+      </>
     );
   }
 
